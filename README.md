@@ -9,7 +9,7 @@ conda create -n SparseTSF-MS python=3.8
 然后我们启动SparseTSF-MS环境并进行相应的配置
 
 ```bash
-conda activate SparseTSF
+conda activate SparseTSF-MS
 pip install -r requirements.txt
 ```
 
