@@ -342,8 +342,12 @@ print(output)
 mindspore对应的代码在仓库中有，在导入模型参数以及设置单位矩阵中有一些不同
 
 最后展示一下我们的结果：
+
 这是torch的版本训练出来的参数在我们的代码上呈现的可视化结果
+
 <img src="https://github.com/July-h5kf3/SparseTSF-in-mindspore/blob/main/figure/torch_in_our_code.png" style="width:400px">
+
 这是我们迁移到mindspore上训练出来的参数在我们的代码上呈现的可视化结果
+
 <img src="https://github.com/July-h5kf3/SparseTSF-in-mindspore/blob/main/figure/mindspore.png" style="width:400px">
 
