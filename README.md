@@ -249,3 +249,100 @@ ms.set_context(mode=ms.PYNATIVE_MODE)
 ```
 
 其余一致
+
+**此外我们在论文的基础上进一步实现了在mindspore上的模型的等效参数可视化**
+
+下面po上我们的理解与代码实现
+
+在《SparseTSF》论文中，采用了一种参数可视化的方法来展现参数的周期性从而展现其模型提取周期性的强大能力：
+
+![image-20241127221056536]([C:\Users\Admin\AppData\Roaming\Typora\typora-user-images\image-20241127221056536.png](https://github.com/July-h5kf3/SparseTSF-in-mindspore/blob/main/figure/image_in_papers.png))
+
+对于线性层的权重可视化很简单，因为一个线性层的参数就是一个大小为[I,O]的矩阵，其中I为输入的向量大小，O为输出的向量大小，那么可以直接plot出来。
+
+然而对于SparseTSF，由于其可训练参数构成为：大小为 $2 * \frac{\omega}{2} + 1$的一维卷积核以及大小为$\frac{H}{\omega} * \frac{L}{\omega}$ 的线性层，显然无法直接用矩阵表现出来，那么我们应该如何对这样的参数进行可视化呢？论文采取了等效参数的方法。
+
+我们首先可以思考一下一个简单的线性层中矩阵中的一个元 的意义。很显然这是**第i个输入对于第j个输出的贡献**那么再回到我们的时间序列预测问题，这同样是i个输入与，无论模型多么复杂，我们同样借鉴上面的思路将其等效为一个二维参数矩阵，矩阵的意义同上。
+
+为什么呢？可以这样想
+
+假设我们输入的用来预测时间序列是 $[1,0,\dots,0]$,那我们得到的输出$[a_{11},a_{12},\dots,a_{1n}]$那么就时间序列的第一个时间步对预测时间序列的贡献（经过这个模型）就一目了然了！
+
+接下来我们来讲解一下在代码层面的实现
+
+```python
+import torch
+from models.SparseTSF import Model as SparseTSF
+import numpy as np
+import torch.nn as nn
+import os
+import matplotlib.pyplot as plt
+```
+
+首先导入库，特别地需要导入matplotlib库以及模型
+
+```python
+class config:
+    def __init__(self):
+        self.seq_len = 96
+        self.pred_len = 96
+        self.enc_in = 7
+        self.period_len = 24
+        self.d_model = 128
+        self.model_type = 'linear'
+configs = config()
+```
+
+定义参数
+
+```python
+path =
+"./checkpoints/ETTh1_96_96_SparseTSF_ETTh1_ftM_sl96_pl96_linear_test_0_seed2023/
+checkpoint.pth"
+model = SparseTSF(configs)
+checkpoint = torch.load(path)
+model.load_state_dict(checkpoint)
+```
+
+加载我们训练好的模型的参数，并导入模型
+
+```python
+eye_matrix = torch.eye(96,96)
+eye_matrix = eye_matrix.unsqueeze(-1)
+eye_matrix = eye_matrix.repeat(1,1, 7)
+```
+
+定义单位矩阵，这里最后之所以repeat（1,1,7）是因为ETTH1数据集有7个通道，每个通道的输入输出贡献不一致，我们分别求出来，最后求均值归一化。
+
+```python
+output = model(final_tensor)
+output = output.mean(dim = 2)
+weights_list = output.detach().numpy()
+weights_min = np.min(weights_list)
+weights_max = np.max(weights_list)
+weights_list = (weights_list - weights_min) / (weights_max - weights_min)
+```
+
+求出模型的结果，并将结果求均值归一化，并且转化为numpy方便进行二维可视化
+
+```python
+save_root = ''
+if os.path.exists('weights_plot'):
+os.mkdir('weights_plot')
+fig,ax = plt.subplots()
+w_name = 'SparseTSF'
+im = ax.imshow(weights_list,cmap='plasma_r')
+fig.colorbar(im,pad = 0.1)
+plt.savefig(os.path.join(save_root,w_name+'.pdf'),dpi=500)
+plt.close
+print(output)
+```
+
+保存模型，并绘制图像
+
+最后展示一下我们的结果：
+
+<img src="https://github.com/July-h5kf3/SparseTSF-in-mindspore/blob/main/figure/torch_in_our_code.png" style="width:400px">
+
+<img src="https://github.com/July-h5kf3/SparseTSF-in-mindspore/blob/main/figure/mindspore.png" style="width:400px">
+
