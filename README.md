@@ -256,7 +256,7 @@ ms.set_context(mode=ms.PYNATIVE_MODE)
 
 在《SparseTSF》论文中，采用了一种参数可视化的方法来展现参数的周期性从而展现其模型提取周期性的强大能力：
 
-![image-20241127221056536]((https://github.com/July-h5kf3/SparseTSF-in-mindspore/blob/main/figure/image_in_papers.png))
+<img src="https://github.com/July-h5kf3/SparseTSF-in-mindspore/blob/main/figure/image_in_papers.png" style="width:400px">
 
 对于线性层的权重可视化很简单，因为一个线性层的参数就是一个大小为[I,O]的矩阵，其中I为输入的向量大小，O为输出的向量大小，那么可以直接plot出来。
 
