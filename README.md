@@ -353,7 +353,7 @@ mindspore对应的代码在仓库中有，在导入模型参数以及设置单�
 
 <img src="https://github.com/July-h5kf3/SparseTSF-in-mindspore/blob/main/figure/mindspore.png" style="width:400px">
 
-## Aknowledge 致谢参考
+## Acknowledgement 致谢参考
 
 SparseTSF：https://github.com/lss-1138/SparseTSF
 Informer：https://github.com/zhouhaoyi/Informer2020
