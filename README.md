@@ -2,6 +2,8 @@
 
 SparseTSF在MindSpore上的代码迁移
 
+使用代码和介绍文字、实验结果请遵循CC0 1.0 通用知识共享公共许可协议，开源是为了大家交流讨论，希望大家遵循开源精神！
+
 ## 模型启动前准备
 
 ```bash
@@ -350,4 +352,9 @@ mindspore对应的代码在仓库中有，在导入模型参数以及设置单�
 这是我们迁移到mindspore上训练出来的参数在我们的代码上呈现的可视化结果
 
 <img src="https://github.com/July-h5kf3/SparseTSF-in-mindspore/blob/main/figure/mindspore.png" style="width:400px">
+
+## Aknowledge 致谢参考
+
+SparseTSF：https://github.com/lss-1138/SparseTSF
+Informer：https://github.com/zhouhaoyi/Informer2020
 
